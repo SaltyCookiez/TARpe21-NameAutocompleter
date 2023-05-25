@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 
 class ServiceController extends Controller
 {
@@ -27,9 +29,19 @@ class ServiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request) : RedirectResponse
     {
-        //
+        // https://laravel.com/docs/10.x/validation#available-validation-rules
+        $validated = $request->validate([
+            'name' => 'required|string|max:128',
+            'basePrice_cents' => 'integer|gte:0',
+            'duration_minutes' => 'integer|gte:0',
+            'description' => 'nullable|string',
+        ]);
+        $service = Service::create($validated);
+        $service->save();
+
+        return redirect(route('services.index'));
     }
 
     /**
