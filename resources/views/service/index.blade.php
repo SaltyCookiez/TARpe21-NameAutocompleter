@@ -22,9 +22,28 @@
             @foreach ($services as $service)
             <div class="flex-1">
                 <div>
+                    <div class="flex justify-between items-center">
                     <div class="ml-2 text-sm text-gray-600">
                         Name:<span class="text-lg text-gray-800"> {{ $service->name }}</span>
-                        {{-- <small class="ml-2 text-sm text-gray-600">{{ $service->created_at->format('j M Y, g:i a') }}</small> --}}
+                        <small class="ml-2 text-sm text-gray-600">{{ $service->created_at->format('j M Y, g:i a') }}</small>
+                        @unless ($service->created_at->eq($service->updated_at))
+                        <small class="text-sm text-gray-600"> &middot; {{ __('edited') }}</small>
+                        @endunless
+                    </div>
+                    <x-dropdown>
+                        <x-slot name="trigger">
+                            <button>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                </svg>
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('services.edit', $service)">
+                                {{ __('Edit') }}
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
                     </div>
                     <div>
                     <small class="ml-2 text-sm text-gray-600">Duration: {{ $service->duration_minutes }}minutes.</small>
