@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class BookingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index():View
     {
-        //
+        return View("bookings.index",[
+            'bookings'=>Booking::all(),
+        ]);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::resource('services', ServiceController::class)
+    ->middleware(['auth', 'verified']);
+Route::resource('bookings', BookingController::class)
     ->middleware(['auth', 'verified']);
 
 
