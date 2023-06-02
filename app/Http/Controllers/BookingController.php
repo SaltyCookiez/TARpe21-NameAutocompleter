@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class BookingController extends Controller
 {
@@ -15,6 +17,7 @@ class BookingController extends Controller
     {
         return View("bookings.index",[
             'bookings'=>Booking::all(),
+            'services'=>Service::all(),
         ]);
     }
 
@@ -31,7 +34,17 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'booking_time' => 'required|date|after:today',
+            'service_id' => 'required|gt:0',
+        ]);
+        $booking = new Booking;
+        $booking->booking_time = $validated['booking_time'];
+        $booking->service()->associate(Service::find($validated['service_id']));
+        $booking->server()->associate($request->user());
+        $booking->save();
+
+        return redirect(route('bookings.index'));
     }
 
     /**
@@ -45,17 +58,28 @@ class BookingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Booking $booking)
+    public function edit(Booking $booking): View
     {
-        //
+        $this->authorize('update',$booking);
+        return view('bookings.edit',[
+            'booking'=>$booking,
+            'services'=>Service::all(),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Booking $booking)
+    public function update(Request $request, Booking $booking): RedirectResponse
     {
-        //
+        $this->authorize('update',$booking);
+        $validated = $request->validate([
+            'booking_time' => 'required|date|after:today',
+            'service_id' => 'required|gt:0',
+        ]);
+        $booking->update($validated);
+
+        return redirect(route('bookings.index'));
     }
 
     /**
