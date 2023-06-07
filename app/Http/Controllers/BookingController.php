@@ -7,6 +7,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use DateInterval;
 
 class BookingController extends Controller
 {
@@ -60,7 +61,13 @@ class BookingController extends Controller
      */
     public function edit(Booking $booking): View
     {
-        $this->authorize('update',$booking);
+        $this->authorize('update', $booking);
+        $booking_time = date_create($booking->booking_time);
+        $seconds = $booking_time->format('s');
+        if($seconds > 0){
+            $booking_time->sub(new DateInterval("PT".$seconds."S"));
+            $booking->booking_time = $booking_time->format('c');
+        }
         return view('bookings.edit',[
             'booking'=>$booking,
             'services'=>Service::all(),

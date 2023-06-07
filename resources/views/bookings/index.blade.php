@@ -9,7 +9,8 @@
             </label>
             <x-input-error :messages="$errors->get('booking_time')" class="mt-2" />
                 <label>{{ __('Service')}}
-                    <select name="service_id" id="">
+                    <select name="service_id" id=""
+                            class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
                         <option value="0" disabled selected>{{ __('Select service') }}</option>
                         @foreach ($services as $service)
                         <option value="{{$service->id}}" @selected(old('service_id')==$service->id) >{{ $service->name }}</option>
